@@ -1,21 +1,72 @@
-
 # Egress SFlow Test Plan
 
-## Overview
+#SONiC Test Plan
 
 
 
 
+<span id="_Toc205800613" class="anchor"><span id="_Toc463421032" class="anchor"><span id="_Toc463514628" class="anchor"></span></span></span>**Related documents**
+
+|                   |          |
+|-------------------|----------|
+| **Document Name** | **Link** |
+|  SFLOW HLD,Sflow  | https://github.com/sonic-net/SONiC/tree/master/doc/sflow |
+|  testplan         |          |
+|                   |          |
+
+
+
+
+##Overview
 
 The purpose is to test the functionality of the sFlow monitoring system in both Ingress and Egress direction on the SONIC switch DUT . The test assumes that the Sonic device has been preconfigured according to the t0 topology.
 
-### Scope
+###Scope
+---------
 
 The test is targeting a running SONIC system with fully functioning configuration. Rather, it is testing the functionality of sFlow on the SONIC system by verifying that sFlow is monitoring traffic flow data correctly.
 
-## Test Structure
+###Scale / Performance
+-------------------
 
-### Setup Configuration
+N/A
+
+###Related **DUT** CLI commands
+----------------------------
+
+&lt;&lt; config sflow enable/disable,config sflow  &gt;&gt;
+
+&lt;&lt; If no CLI commands are available for this feature, please keep the table but add N/A &gt;&gt;
+
+| **Command**                                                      | **Comment** |
+|------------------------------------------------------------------|-------------|
+| **Configuration commands**                                       |             | 
+| &lt;&lt; config sflow enable/disable &gt;&gt;                    |             |
+| &lt;&lt; config sflow direction &gt;&gt;                         |             | 
+| &lt;&lt; config sflow interface sample-rate &gt;&gt;             |             |
+| &lt;&lt; config sflow interface direction &gt;&gt;               |             |
+| &lt;&lt; config sflow collector add/del &gt;&gt;                 |             |
+| **Show commands**                                                |             |
+| &lt;&lt; show sflow,show sflow interface &gt;&gt;                |             |
+
+###Related DUT configuration files
+-----------------------------------
+
+&lt;&lt; N/A &gt;&gt;
+
+
+###Related SAI APIs
+----------------
+
+&lt;&lt; sai_create_samplepacket,sai_remove_samplepacket,sai_set_samplepacket_attribute,sai_get_samplepacket_attribute &gt;&gt;
+
+<span id="_Toc463421033" class="anchor"></span>
+
+##Test structure 
+===============
+
+###Setup configuration
+-------------------
 
 The test will run on the t0 testbed:
 
@@ -28,6 +79,13 @@ The test will run on the t0 testbed:
 - Ingress and Egress samples will be identified using integer attribute PSAMPLE_ATTR_SAMPLE_GROUP - expects ingress samples to appear with group=1, and egress samples to appear with group=2 
 - Sflowtool to be installed in ptf docker to run these tests.
 
+Note : Leaf Port - DUT port connected to Leaf
+	   Server Port - DUT port connected to TOR servers
+	   Enable egress sflow - set the sample-direction to 'tx'
+	   Disable egress sflow - set the sample-direction to 'rx'
+	   Enable ingress sflow - set the sample-direction to 'rx'
+	   Disable ingress sflow - set the sample-direction to 'tx'
+
 ### Test Cases
 
 #### Test Case #1
@@ -38,9 +96,9 @@ Verify that the egress-sampling on the port connected to leaf.
 
 | #    | Steps                                                        | Expected Result                                              |
 | ---- | :----------------------------------------------------------- | ------------------------------------------------------------ |
-| 1.   | 1. Enable egress sflow on leaf port <br />2. Add a single collector with default port (6343), <br />3. Enable sFlow globally,<br />4. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface". <br />Traffic is sent to portchannel interfaces and Samples should be received by the collector . |
-| 2.   | 1. Enable ingress sflow on server port <br />2. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface".<br />Verify collector receives both ingress and egress samples. |
-| 3.   | 1. Disable egress sflow globally<br />2. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface". only Ingress samples should be received by both collector.|
+| 1.   | 1. Enable egress sflow on leaf port <br />2. Add a single collector with default port (6343), <br />3. Enable sFlow globally,<br />4. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface". <br />Traffic is sent to leaf ports and Samples should be received by the collector .|
+| 2.   | 1. Enable ingress sflow on server port (i.e set the sample-direction to 'rx')<br />2. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface".<br />Verify collector receives both ingress and egress samples. |
+| 3.   | 1. Disable egress sflow globally<br />2. Send traffic | The configurations should be reflected in “show sflow” and "show sflow interface". only Ingress samples should be received by the collector.|
 | 4.   | 1. Enable back the egress-sflow <br />2. Send traffic | Verify collector receives both ingress and egress samples |
 
 #### Test Case #2
@@ -88,15 +146,14 @@ Verify that sflow configs at interface-level has higher precedence then global c
 
 ##### Test objective
 
-Verify that sflow sampling works when enabled at interface level and disable at global level.
+Verify that sflow sampling behaviour when enabled at interface level and disable at global level.
 
 | #    | Steps                                                        | Expected Result                                              |
 | ---- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | 1.   | 1. Disable sflow globally.| Verify sflow admin-state is Down on all ports.The configurations should be reflected in “show sflow” and "show sflow interface.|
 | 2.   | 1. Enable egress sflow on leaf ports at interface level.| Verify that sflow admin-state is UP on the leaf ports.The configurations should be reflected in “show sflow” and "show sflow interface.|
-| 3.   | 1. Send traffic from server port to leaf ports.| Verify the collector is receives egress samples.|
-| 4.   | 1. Enable ingress sflow on server ports at interface level.| Verify that sflow admin-state is UP on the server ports.The configurations should be reflected in “show sflow” and "show sflow interface.|
-| 5.   | 1. Send traffic from server port to leaf ports.| Verify the collector is receives both ingress and egress samples.|
+| 3.   | 1. Enable ingress sflow on server ports at interface level.| Verify that sflow admin-state is UP on the server ports.The configurations should be reflected in “show sflow” and "show sflow interface.|
+| 4.   | 1. Send traffic from server port to leaf ports.| Verify the collector does not receive ingress and egress samples.|
 
 
 #### Test Case #6
@@ -113,3 +170,6 @@ Verify that sflow admin-state.
 | 4.   | 1. Send traffic from server port to leaf ports.| Verify that samples are not received at the collector.|
 | 5.   | 1. Now update the admin-state in sflow to "Up", use sonic-cfgjen utility to apply the config| The configurations should be reflected in “show sflow” and "show sflow interface.|
 | 6.   | 1. Send traffic from server port to leaf ports.| Verify that samples are received at the collector.|
+
+
+
