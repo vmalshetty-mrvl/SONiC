@@ -36,7 +36,6 @@ N/A
 
 &lt;&lt; config sflow enable/disable,config sflow  &gt;&gt;
 
-&lt;&lt; If no CLI commands are available for this feature, please keep the table but add N/A &gt;&gt;
 
 | **Command**                                                      | **Comment** |
 |------------------------------------------------------------------|-------------|
