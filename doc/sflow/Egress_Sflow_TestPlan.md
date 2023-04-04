@@ -30,13 +30,14 @@ N/A
 | **Command**                                                      | **Comment** |
 |------------------------------------------------------------------|-------------|
 | **Configuration commands**                                       |             | 
-| config sflow enable/disable                                      |             |
-| config sflow direction                                           |             | 
-| config sflow interface sample-rate		                   |             |
-| config sflow interface direction                                 |             |
-| config sflow collector add/del                                   |             |
+| config sflow enable/disable                                      |Enable/Disable sflow globally             |
+| config sflow direction                                           |set sflow direction globally            |
+| config sflow interface <enable/disable>                          |Enable/Disable sflow interface level         |
+| config sflow interface sample-rate        		                   |set sample-rate at interface level             |
+| config sflow interface direction                                 |set sflow direction at interface level            |
+| config sflow collector add/del                                   |collector configuration            |
 | **Show commands**                                                |             |
-| show sflow,show sflow interface                                  |             |
+| show sflow,show sflow interface                                  |global and interface level show commands             |
 
 
 ### Related DUT configuration files
