@@ -70,6 +70,7 @@ The test will run on the t0 testbed:
 - Collection is implemented using the sflowtool. Counter sampling output and flow sampling output are directed to a text file. The test script parses the text file and validates the data according to the polling/sampling rate configured and the interfaces enabled.
 - Ingress and Egress samples will be identified using integer attribute PSAMPLE_ATTR_SAMPLE_GROUP - expects ingress samples to appear with group=1, and egress samples to appear with group=2 
 - Sflowtool to be installed in ptf docker to run these tests.
+- All the testcases will configure sample-rate = 65536 unless specified
 
 **Terminology :**
 | **Term**                              | **Meaning**                            |
