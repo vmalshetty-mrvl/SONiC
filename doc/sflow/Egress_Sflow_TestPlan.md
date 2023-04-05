@@ -18,7 +18,7 @@ The purpose is to test the functionality of the sFlow monitoring system in both 
 
 ### Scope
 ---------
-The test is targetting egress sflow functionality test on SONiC DUT with T0 configuration.The test will also cover testing egress flow in combination with ingress sflow.
+The test is targetting egress sflow functionality test on SONiC DUT with T0 configuration.The test will also cover testing egress sflow in combination with ingress sflow.
 
 ### Scale / Performance
 -------------------
@@ -65,7 +65,7 @@ The test will run on the t0 testbed:
 
 ![testbed-t0.png](https://github.com/sonic-net/sonic-mgmt/blob/master/docs/testbed/img/testbed-t0.png?raw=true)
 
-- Initially platform dependency check will be done for egress sflow support, if platform supports egress sflow then all the testcases under this testplan will be executed else will skip.
+- Initially in the set-up call platform dependency check will be done for egress sflow support by querying STATE_DB, if platform supports egress sflow then all the testcases under this testplan will be executed else will skip.
 - 2 ports from Vlan1000 are removed and used to reach sflow collector in ptf docker .
 - Traffic is sent from ptf docker with different packet sizes to the Leaf ports,server ports which are enabled with sflow .
 - Collection is implemented using the sflowtool. Counter sampling output and flow sampling output are directed to a text file. The test script parses the text file and validates the data according to the polling/sampling rate configured and the interfaces enabled.
@@ -133,8 +133,8 @@ Verify that sflow configs with globally Disabled and enabled interface level.
 | #    | Steps                                                        | Expected Result                                              |
 | ---- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | 1.   | 1. Disable sflow globally.set the sample_direction to 'both' at global level<br />2. Enable sflow on server-port1 and set the direction to 'rx'<br />3. Enable sflow on leaf-port1 and set the sample_direction to 'tx'<br />4.Send traffic from server-port1 and leaf-port1| The configurations should be reflected in “show sflow” and "show sflow interface.Verify NO samples are received at the collector|
-| 2.   | 1. set the sample_direction to 'rx' at global level<br />2. Enable sflow on server-port1 and set the direction to 'rx'<br />3. Enable sflow on leaf-port1 and set the sample_direction to 'tx'<br />4.Send traffic from server-port1 and leaf-port1| The configurations should be reflected in “show sflow” and "show sflow interface. | Verify collector receives only egress samples from leaf-port1.|
-| 3.   | 1. set the sample_direction to 'tx' at global level<br />2. Enable sflow on server-port1 and set the direction to 'rx'<br />3. Enable sflow on leaf-port1 and set the sample_direction to 'tx'<br />4.Send traffic from server-port1 and leaf-port1| The configurations should be reflected in “show sflow” and "show sflow interface. | Verify collector receives only ingress samples from server-port1.|
+| 2.   | 1. set the sample_direction to 'rx' at global level<br />2. Enable sflow on server-port1 and set the direction to 'rx'<br />3. Enable sflow on leaf-port1 and set the sample_direction to 'tx'<br />4.Send traffic from server-port1 and leaf-port1| The configurations should be reflected in “show sflow” and "show sflow interface.Verify NO samples are received at the collector.|
+| 3.   | 1. set the sample_direction to 'tx' at global level<br />2. Enable sflow on server-port1 and set the direction to 'rx'<br />3. Enable sflow on leaf-port1 and set the sample_direction to 'tx'<br />4.Send traffic from server-port1 and leaf-port1| The configurations should be reflected in “show sflow” and "show sflow interface. Verify NO samples are received at the collector.|
 | 4.   | 1. Enable sflow globally <br />2.Send traffic from server-port1 and server-port2| The configurations should be reflected in “show sflow” and "show sflow interface.Verify ingress samples are received at the collector.|
 
 
